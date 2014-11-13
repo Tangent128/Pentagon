@@ -1,0 +1,17 @@
+* barebones page loading transformative JS
+* adjust script:
+** load scripts/stylesheets from template
+** 6 relevant CSS classes:
+Holder = put divs with each page's content under here
+CurrentPage = active page
+PrevPage = page before this
+NextPage = page after this
+** or maybe:
+Holder
+Page = a page entry, under Holder
+* Something.getPage() API
+= {
+div: $(content)
+prev: Promise
+next: Promise
+}
