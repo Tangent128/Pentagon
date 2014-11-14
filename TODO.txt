@@ -1,19 +1,27 @@
 Pentagon
-* barebones page loading transformative JS
 * adjust script:
 ** load scripts/stylesheets from template
-** 6 relevant CSS classes:
+** relevant-to-theme-wrapper CSS classes:
+#Content = move initial page's body here
+Local = <link> is from initial page (nav links, special favicons, etc)
+Global = <link> is from theme page (stylesheets *always* go here)
+** relevant-to-switcher CSS classes:
+(Local/Global as before)
 Holder = put divs with each page's content under here
 CurrentPage = active page
 PrevPage = page before this
 NextPage = page after this
-** or maybe:
-Holder
-Page = a page entry, under Holder
-* Something.getPage() API
-= {
+* Pentagon.getPage() API returns promise: {
+url: url (rel=self)
 div: $(content)
-prev: Promise
-next: Promise
+links: $(<link>s that should be added/removed with this page's status)
+prev: url
+next: url
 }
+** automatically adds relevant <script>s and stylesheet <link>s to <head> (won't duplicate)
 * pageload.pentagon event??
+
+
+* If we want to jettison old Opera/IE, and use DOMParser:
+var parser = new DOMParser();
+var = $(parser.parseFromString(html, "text/html"));

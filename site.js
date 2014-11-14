@@ -10,7 +10,26 @@ $defer.push(function($, loaded) {
 		url: PENTAGON_THEME_URL,
 		dataType: "html"
 	}).then(function(html) {
-		$themePage = $(html);
+		var $body = $("body");
+		// parse template
+		// jQuery loses track of html/head/body tags in parsing,
+		// so we hackily find those parts of the page on our own. >.<
+		var head = html.match(/<head>([\s\S]*)<\/head>/m);
+		var body = html.match(/<body>([\s\S]*)<\/body>/m);
+		
+		var $themeHead = $("<div>").append($.parseHTML(head[1]));
+		var $themeBody = $.parseHTML(body[1]);
+		
+		// grab template & page content
+		var $initialContent = $body.contents();
+		
+		// rearrange contents so that the template is under the real
+		// <body> and the page content is in the right <div>
+		$body.append($themeBody);
+		var $content = $("#Content");
+		$content.append($initialContent);
+		
+		// loaded("Pentagon.initialPage").resolve({... div = $content});
 	});
 });
 
