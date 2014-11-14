@@ -23,5 +23,5 @@ next: url
 
 
 * If we want to jettison old Opera/IE, and use DOMParser:
-var parser = new DOMParser();
+
 var = $(parser.parseFromString(html, "text/html"));
