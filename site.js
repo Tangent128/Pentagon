@@ -1,10 +1,23 @@
 
-var defer = defer || [];
+var $defer = $defer || [];
+
+var JQUERY_URL = "//code.jquery.com/jquery-1.11.0.min.js";
+var PENTAGON_THEME_URL = "site.html";
+
+/* Theme Applicator Script */
+$defer.push(function($, loaded) {
+	$.ajax({
+		url: PENTAGON_THEME_URL,
+		dataType: "html"
+	}).then(function(html) {
+		$themePage = $(html);
+	});
+});
 
 /* Async Script + jQuery Loader */
 (function() {
 	var script = document.createElement("script");
-	script.src = "//code.jquery.com/jquery-1.11.0.min.js";
+	script.src = JQUERY_URL;
 	script.onload = function() {
 		jQuery(function($) {
 			
@@ -15,8 +28,8 @@ var defer = defer || [];
 				return loadMap[name];
 			}
 			
-			var queue = defer;
-			defer = {
+			var queue = $defer;
+			$defer = {
 				push: function(callback) {
 					callback($, loaded);
 				}
@@ -30,29 +43,3 @@ var defer = defer || [];
 	document.head.appendChild(script);
 	
 })();
-
-/* Theme Applicator Script */
-defer.push(function($, loaded) {
-	$("body").css("background", "red");
-});
-
-/* Dependency Test */
-
-defer.push(function($, loaded) {
-	loaded("C").then(function(C) {
-		console.log("loaded A, needed "+C);
-		loaded("A").resolve("apple");
-	});
-});
-
-defer.push(function($, loaded) {
-	$.when(loaded("A"), loaded("C")).then(function(A, C) {
-		console.log("loaded B, needed "+A+" and "+C);
-		loaded("B").resolve("banana");
-	});
-});
-
-defer.push(function($, loaded) {
-	console.log("loaded C");
-	loaded("C").resolve("cherry");
-});
