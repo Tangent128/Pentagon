@@ -4,7 +4,7 @@ var Pentagon = Pentagon || [];
 var JQUERY_URL = "//code.jquery.com/jquery-1.11.0.min.js";
 var PENTAGON_THEME_URL = "theme.html";
 
-/* Theme Applicator Script */
+/* Page Loading & Theme Applicator Script */
 Pentagon.push(function($, loaded) {
 	
 	var $html = $("html");
@@ -28,10 +28,21 @@ Pentagon.push(function($, loaded) {
 		});
 	}
 	
-	forMetaFiles($html, function(filename, tag) {
-		loadedFiles[filename] = tag;
-		console.log("mark "+filename+" as preloaded");
+	// register preloaded files so we don't try pulling them in again
+	forMetaFiles($html, function(filename, $tag) {
+		loadedFiles[filename] = $tag;
 	});
+	
+	function makePageRecord($div) {
+		$div = $div || $("<div>");
+		var record = {
+			div: $div,
+			title: "",
+			loaded: $.Deferred()
+		};
+		record.div.data("PentagonPage", record);
+		return record;
+	}
 	
 	function processPage($page, record) {
 		// capture page data
@@ -50,44 +61,54 @@ Pentagon.push(function($, loaded) {
 		record.prev = getHref("prev");
 		record.icon = getHref("icon");
 		
-		// capture scripts/stylesheets
+		// register page under proper name & mark loaded
+		pageRecords[record.url] = record;
+		record.loaded.resolve(record);
+		
+		// import scripts/stylesheets that aren't already loaded
 		forMetaFiles($page, function(filename, $tag) {
 			if(loadedFiles[filename]) {
 				return;
 			}
 			loadedFiles[filename] = $tag;
-			console.log("append "+filename+" to head");
 			$head.append($tag);
 		});
 	}
 	
-	/* Fetch & apply theme */
-	var themeRequest = $.ajax({
-		url: PENTAGON_THEME_URL,
-		dataType: "html"
-	});
-	
-	$.when(themeRequest, htmlParser).then(function(themeResult, parser) {
-		var html = themeResult[0];
-		// parse template
-		var $theme = $(parser.parseFromString(html, "text/html"));
-	
-		var themeRecord = {};
-		themeRecord.div = $("<div>");
-		processPage($theme, themeRecord);
-		pageRecords[themeRecord.url] = $.when(themeRecord);
+	/* Load pages */
+	function getPage(url) {
+		if(pageRecords[url]) {
+			return pageRecords[url];
+		}
+		var record = makePageRecord();
+		pageRecords[url] = record;
 		
-		// extract data from initial page
-		var record = {};
-		record.div = themeRecord.div.find("#Content");
+		var request = $.ajax({
+			url: url,
+			dataType: "html"
+		});
+		
+		$.when(request, htmlParser).then(function(result, parser) {
+			var html = result[0];
+			var $page = $(parser.parseFromString(html, "text/html"));
+			processPage($page, record);
+		});
+		
+		return record;
+	}
+	
+	/* Load & apply theme */
+	getPage(PENTAGON_THEME_URL).loaded.then(function(themeRecord) {
+		var $contentDiv = themeRecord.div.find("#Content");
+		
+		// extract data from initial page, store it in
+		// the theme's content holder div
+		var record = makePageRecord($contentDiv);
 		processPage($html, record);
-		pageRecords[record.url] = $.when(record);
 		
 		// rearrange contents so that the template is under the real
 		// <body> and the page content is in the right <div>
 		$body.append(themeRecord.div);
-		
-		// loaded("Pentagon.initialPage").resolve({... div = $content});
 	});
 });
 
