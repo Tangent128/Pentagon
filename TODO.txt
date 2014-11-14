@@ -1,3 +1,4 @@
+Pentagon
 * barebones page loading transformative JS
 * adjust script:
 ** load scripts/stylesheets from template
@@ -15,3 +16,4 @@ div: $(content)
 prev: Promise
 next: Promise
 }
+* pageload.pentagon event??
