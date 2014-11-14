@@ -142,10 +142,10 @@ Pentagon.push(function($, loaded) {
 	
 })();
 
-/* HTML Parser hacky polyfill */
+/* HTML Parser slightly-hacky polyfill */
 Pentagon.push(function($, loaded) {
 	try {
-		// inspired by https://gist.github.com/eligrey/1129031
+		// test inspired by https://gist.github.com/eligrey/1129031
 		var parser = new DOMParser();
 		if(parser.parseFromString("", "text/html")) {
 			loaded("htmlParser").resolve(parser);
@@ -154,16 +154,13 @@ Pentagon.push(function($, loaded) {
 	} catch(ex) {}
 	
 	loaded("htmlParser").resolve({
-		parseFromString: function(src) {
+		parseFromString: function(src, assumedToBeHTML) {
 			var html = $("<html>");
-			
-			// jQuery loses track of html/head/body tags in parsing,
-			// so we hackily find those parts of the page on our own. >.<
-			var head = $("<head>").html(src.match(/<head>([\s\S]*)<\/head>/m)[1]);
-			var body = $("<body>").html(src.match(/<body>([\s\S]*)<\/body>/m)[1]);
-			
-			html.append(head);
+			var body = $("<body>");
 			html.append(body);
+			
+			body[0].outerHTML = src;
+			
 			return html;
 		}
 	});
