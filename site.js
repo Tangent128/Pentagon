@@ -1,11 +1,13 @@
 
-var $defer = $defer || [];
+var Pentagon = Pentagon || [];
 
 var JQUERY_URL = "//code.jquery.com/jquery-1.11.0.min.js";
 var PENTAGON_THEME_URL = "site.html";
 
 /* Theme Applicator Script */
-$defer.push(function($, loaded) {
+Pentagon.push(function($, loaded) {
+	
+	/* Fetch & apply theme */
 	$.ajax({
 		url: PENTAGON_THEME_URL,
 		dataType: "html"
@@ -47,8 +49,8 @@ $defer.push(function($, loaded) {
 				return loadMap[name];
 			}
 			
-			var queue = $defer;
-			$defer = {
+			var queue = Pentagon;
+			Pentagon = {
 				push: function(callback) {
 					callback($, loaded);
 				}
