@@ -7,28 +7,30 @@ var PENTAGON_THEME_URL = "site.html";
 /* Theme Applicator Script */
 Pentagon.push(function($, loaded) {
 	
+	var $html = $("html");
+	var $body = $("body");
 	var htmlParser = loaded("htmlParser");
 	
 	/* Keep track of pages' nav links for swapout, while
 	 * importing scripts/styles sitewide */
 	var loadedFiles = {};
-	var $head = $("head");
-	var $body = $("body");
+	var pageRecords = {};
 	
-	function processPage($page) {
-		function getLinks(rel) {
+	function processPage($page, record) {
+		function getHref(rel) {
 			var $links = $page.find("head link[rel="+rel+"]");
 			if($links.length == 0) {
 				$links = $page.find("body a[rel="+rel+"]");
 			}
-			return $links;
+			return $links.attr("href");
 		}
 		
-		var record = {};
-		record.url = getLinks("self").attr("href");
-		record.div = $("<div>").append($page.find("body").content());
-		
-		return record;
+		// capture page data
+		record.url = getHref("self");
+		record.div.append($page.find("body").contents());
+		record.title = $page.find("head title").text();
+		record.next = getHref("next");
+		record.prev = getHref("prev");
 	}
 	
 	/* Fetch & apply theme */
@@ -41,17 +43,17 @@ Pentagon.push(function($, loaded) {
 		var html = themeResult[0];
 		// parse template
 		var $theme = $(parser.parseFromString(html, "text/html"));
-		var $themeHead = $theme.find("head");
-		var $themeBody = $theme.find("body").contents();
+		$themeBody = $theme.find("body").contents();
 		
-		// grab template & page content
-		var $initialContent = $body.contents();
+		// extract data from initial page
+		var record = {};
+		record.div = $theme.find("#Content");
+		processPage($html, record);
+		pageRecords[record.url] = $.when(record);
 		
 		// rearrange contents so that the template is under the real
 		// <body> and the page content is in the right <div>
 		$body.append($themeBody);
-		var $content = $("#Content");
-		$content.append($initialContent);
 		
 		// loaded("Pentagon.initialPage").resolve({... div = $content});
 	});

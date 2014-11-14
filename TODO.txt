@@ -13,8 +13,8 @@ PrevPage = page before this
 NextPage = page after this
 * Pentagon.getPage() API returns promise: {
 url: url (rel=self)
+title: page name
 div: $(content)
-links: $(<link>s that should be added/removed with this page's status)
 prev: url
 next: url
 }
