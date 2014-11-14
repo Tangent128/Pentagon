@@ -2,21 +2,39 @@
 var Pentagon = Pentagon || [];
 
 var JQUERY_URL = "//code.jquery.com/jquery-1.11.0.min.js";
-var PENTAGON_THEME_URL = "site.html";
+var PENTAGON_THEME_URL = "theme.html";
 
 /* Theme Applicator Script */
 Pentagon.push(function($, loaded) {
 	
 	var $html = $("html");
+	var $head = $("head");
 	var $body = $("body");
 	var htmlParser = loaded("htmlParser");
 	
-	/* Keep track of pages' nav links for swapout, while
-	 * importing scripts/styles sitewide */
+	/* Keep track of pages' metadata, and import any needed stylesheets
+	 * and script files (without adding a file multiple times) */
 	var loadedFiles = {};
 	var pageRecords = {};
 	
+	function forMetaFiles($context, callback) {
+		$context.find("head link[rel=stylesheet]").each(function() {
+			var $stylesheet = $(this);
+			callback($stylesheet.attr("href"), $stylesheet);
+		});
+		$context.find("head script").each(function() {
+			var $script = $(this);
+			callback($script.attr("src"), $script);
+		});
+	}
+	
+	forMetaFiles($html, function(filename, tag) {
+		loadedFiles[filename] = tag;
+		console.log("mark "+filename+" as preloaded");
+	});
+	
 	function processPage($page, record) {
+		// capture page data
 		function getHref(rel) {
 			var $links = $page.find("head link[rel="+rel+"]");
 			if($links.length == 0) {
@@ -25,12 +43,22 @@ Pentagon.push(function($, loaded) {
 			return $links.attr("href");
 		}
 		
-		// capture page data
 		record.url = getHref("self");
 		record.div.append($page.find("body").contents());
 		record.title = $page.find("head title").text();
 		record.next = getHref("next");
 		record.prev = getHref("prev");
+		record.icon = getHref("icon");
+		
+		// capture scripts/stylesheets
+		forMetaFiles($page, function(filename, $tag) {
+			if(loadedFiles[filename]) {
+				return;
+			}
+			loadedFiles[filename] = $tag;
+			console.log("append "+filename+" to head");
+			$head.append($tag);
+		});
 	}
 	
 	/* Fetch & apply theme */
@@ -43,17 +71,21 @@ Pentagon.push(function($, loaded) {
 		var html = themeResult[0];
 		// parse template
 		var $theme = $(parser.parseFromString(html, "text/html"));
-		$themeBody = $theme.find("body").contents();
+	
+		var themeRecord = {};
+		themeRecord.div = $("<div>");
+		processPage($theme, themeRecord);
+		pageRecords[themeRecord.url] = $.when(themeRecord);
 		
 		// extract data from initial page
 		var record = {};
-		record.div = $theme.find("#Content");
+		record.div = themeRecord.div.find("#Content");
 		processPage($html, record);
 		pageRecords[record.url] = $.when(record);
 		
 		// rearrange contents so that the template is under the real
 		// <body> and the page content is in the right <div>
-		$body.append($themeBody);
+		$body.append(themeRecord.div);
 		
 		// loaded("Pentagon.initialPage").resolve({... div = $content});
 	});
