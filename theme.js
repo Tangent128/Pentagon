@@ -6,8 +6,6 @@ Pentagon.push(function(loaded) {
 	function(getPage, initialPage, $) {
 		
 		var currentPage = null;
-		var prevPage = null;
-		var nextPage = null;
 		
 		var $title = $("title");
 		var $holder = $("#Holder");
@@ -29,41 +27,54 @@ Pentagon.push(function(loaded) {
 			return page;
 		}
 		
+		function setSpot(page, spot) {
+			// be careful with class changes to not disrupt animations
+			var $page = page.wrapper;
+			
+			if($page.hasClass(spot)) {
+				return;
+			}
+			var oldSpot = $page.data("spot");
+			if(oldSpot) {
+				$page.removeClass(oldSpot);
+			}
+			$page.addClass(spot);
+			$page.data("spot", spot);
+			$page.addClass("show");
+		}
+		
 		function showMetadata(page) {
 			// apply page metadata
 			$title.text(page.title);
 			
 			// preload/preview neighbors
-			// be careful with class changes to not disrupt animations
-			if(page.prev != prevPage) {
-				$(".PentagonWrapper.prev").removeClass("prev");
-				prevPage = page.prev;
-			}
 			if(page.prev) {
 				var prev = readyPage(page.prev);
-				prev.wrapper.addClass("prev");
-			}
-			if(page.next != nextPage) {
-				$(".PentagonWrapper.next").removeClass("next");
-				nextPage = page.next;
+				setSpot(prev, "prev");
 			}
 			if(page.next) {
 				var next = readyPage(page.next);
-				next.wrapper.addClass("next");
+				setSpot(next, "next");
 			}
 		}
 		
 		function setCurrentPage(url, pushHistory) {
 			
+			$(".PentagonWrapper.show").removeClass("show");
+			
 			// set new state
 			var page = readyPage(url);
 			currentPage = page;
-			$(".PentagonWrapper.current").removeClass("current");
-			page.wrapper.addClass("current");
+			setSpot(page, "current");
 			page.wrapper.focus();
 			
 			// apply metadata optimistically
 			showMetadata(page);
+
+			// remove anything onscreen that shouldn't be
+			$(".PentagonWrapper.current:not(.show)").removeClass("current");
+			$(".PentagonWrapper.prev:not(.show)").removeClass("prev");
+			$(".PentagonWrapper.next:not(.show)").removeClass("next");
 
 			// play nice with back button
 			if(pushHistory){
