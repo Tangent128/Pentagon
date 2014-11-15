@@ -5,6 +5,8 @@ Pentagon.push(function(loaded) {
 	loaded("Pentagon.getPage", "Pentagon.initialPage", "$").then(
 	function(getPage, initialPage, $) {
 		
+		var currentPage = null;
+		
 		var $title = $("title");
 		var $holder = $("#Holder");
 		
@@ -18,13 +20,34 @@ Pentagon.push(function(loaded) {
 			return page;
 		}
 		
+		function showMetadata(page) {
+			// apply page metadata
+			$title.text(page.title);
+			
+			// preload/preview neighbors
+			if(page.prev) {
+				var prev = readyPage(page.prev);
+				prev.div.addClass("prev");
+			}
+			if(page.next) {
+				var next = readyPage(page.next);
+				next.div.addClass("next");
+			}
+		}
+		
 		function setCurrentPage(url, pushHistory) {
 			// reset view state
 			$(".PentagonPage.current").removeClass("current");
+			$(".PentagonPage.prev").removeClass("prev");
+			$(".PentagonPage.next").removeClass("next");
 			
 			// set new state
 			var page = readyPage(url);
+			currentPage = page;
 			page.div.addClass("current");
+			
+			// apply metadata optimistically
+			showMetadata(page);
 
 			// play nice with back button
 			if(pushHistory){
@@ -33,10 +56,12 @@ Pentagon.push(function(loaded) {
 				}
 			}
 			
-			// preload neighbors
+			// apply metadata once we know it's loaded
 			page.loaded.then(function(page) {
-				if(page.prev) readyPage(page.prev);
-				if(page.next) readyPage(page.next);
+				// ensure we didn't load too late to display
+				if(page == currentPage) {
+					showMetadata(page);
+				}
 			});
 		}
 		

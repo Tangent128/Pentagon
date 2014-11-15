@@ -1,27 +1,5 @@
 Pentagon
-* adjust script:
-** load scripts/stylesheets from template
-** relevant-to-theme-wrapper CSS classes:
-#Content = move initial page's body here
-Local = <link> is from initial page (nav links, special favicons, etc)
-Global = <link> is from theme page (stylesheets *always* go here)
-** relevant-to-switcher CSS classes:
-(Local/Global as before)
-Holder = put divs with each page's content under here
+* relevant-to-switcher CSS classes:
 CurrentPage = active page
 PrevPage = page before this
 NextPage = page after this
-* Pentagon.getPage() API returns promise: {
-url: url (rel=self)
-title: page name
-div: $(content)
-prev: url
-next: url
-}
-** automatically adds relevant <script>s and stylesheet <link>s to <head> (won't duplicate)
-* pageload.pentagon event??
-
-
-* If we want to jettison old Opera/IE, and use DOMParser:
-
-var = $(parser.parseFromString(html, "text/html"));

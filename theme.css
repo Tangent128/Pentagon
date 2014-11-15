@@ -19,8 +19,23 @@ body {
 	display: none;
 	background: #ffa;
 	margin: 0;
-	padding: 0.5em;
+
+	position: absolute;
+	top: 0;
+	width: 600px;
+	
+	-webkit-transition: left 0.5s;
+	transition: left 0.5s;
 }
-.current {
+.PentagonPage.current {
 	display: block;
+	left: 0;
+}
+.PentagonPage.prev {
+	display: block;
+	left: -650px;
+}
+.PentagonPage.next {
+	display: block;
+	left: 650px;
 }
