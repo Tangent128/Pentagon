@@ -18,6 +18,7 @@ _5gon.push(function(loaded) {
 			
 			var $wrapper = $("<div>")
 			$wrapper.addClass("PentagonWrapper");
+			$wrapper.attr("tabindex", -1);
 			
 			page.wrapper = $wrapper;
 			
@@ -25,7 +26,9 @@ _5gon.push(function(loaded) {
 			$wrapper.append(page.div);
 			$holder.append($wrapper);
 			
-			page.injected.resolve($wrapper);
+			page.loaded.then(function() {
+				page.injected.resolve($wrapper);
+			});
 			
 			return page;
 		}
@@ -33,7 +36,8 @@ _5gon.push(function(loaded) {
 		function setSpot(page, spot) {
 			// be careful with class changes to not disrupt animations
 			var $page = page.wrapper;
-			
+			$page.addClass("show");
+				
 			if($page.hasClass(spot)) {
 				return;
 			}
@@ -43,7 +47,6 @@ _5gon.push(function(loaded) {
 			}
 			$page.addClass(spot);
 			$page.data("spot", spot);
-			$page.addClass("show");
 		}
 		
 		function showMetadata(page) {
@@ -69,7 +72,9 @@ _5gon.push(function(loaded) {
 			var page = readyPage(url);
 			currentPage = page;
 			setSpot(page, "current");
-			page.wrapper.focus();
+			
+			var $wrapper = page.wrapper;
+			$wrapper.focus();
 			
 			// apply metadata optimistically
 			showMetadata(page);
