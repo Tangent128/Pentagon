@@ -121,12 +121,12 @@ Pentagon.push(function(loaded) {
 					if(currentPage.prev) {
 						setCurrentPage(currentPage.prev, true);
 					}
-					break;
+					return false;
 				case 39: // right
 					if(currentPage.next) {
 						setCurrentPage(currentPage.next, true);
 					}
-					break;
+					return false;
 			}
 		});
 		

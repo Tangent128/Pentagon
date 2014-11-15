@@ -21,18 +21,27 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 			var $stylesheet = $(this);
 			callback($stylesheet.attr("href"), $stylesheet);
 		});
+		$context.find("head style").each(function() {
+			var $stylesheet = $(this);
+			callback(null, $stylesheet);
+		});
 		$context.find("head script").each(function() {
 			// create new script element to ensure the script will run
 			var src = $(this).attr("src");
 			var $script = $("<script>");
-			$script.attr("src", src);
-			callback(src, $script);
+			if(src) {
+				$script.attr("src", src);
+				callback(src, $script);
+			} else {
+				$script.text($(this).text());
+				callback(null, $script);
+			}
 		});
 	}
 	
 	// register preloaded files so we don't try pulling them in again
 	forMetaFiles($html, function(filename, $tag) {
-		loadedFiles[filename] = true;
+		loadedFiles[filename] = (filename != null);
 	});
 	
 	function makePageRecord($div) {
@@ -73,7 +82,7 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 			if(loadedFiles[filename]) {
 				return;
 			}
-			loadedFiles[filename] = true;
+			loadedFiles[filename] = (filename != null);
 			// need to append tag via raw DOM methods to
 			// prevent jQuery from messing with the url:
 			$head[0].appendChild($tag[0]);
