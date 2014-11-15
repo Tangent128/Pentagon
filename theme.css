@@ -16,31 +16,35 @@ body {
 	background: #800;
 	background: linear-gradient(to bottom, #800, #400);
 }
-.PentagonPage {
+.PentagonWrapper {
 	display: none;
 	background: #ffa;
-	padding: 0px 10px 10px;
 
 	position: absolute;
 	top: 0;
-	width: 580px;
+	width: 600px;
 	max-height: 100%;
 	overflow-y: auto;
 	
-	opacity: 0;
+	opacity: 1;
 	
 	-webkit-transition: left 0.5s, opacity 1s;
 	transition: left 0.5s, opacity 1s;
+	-webkit-transition: left 0.5s;
+	transition: left 0.5s;
 }
-.PentagonPage.prev {
+.PentagonPage {
+	padding: 0px 10px 10px;
+}
+.PentagonWrapper.prev {
 	display: block;
 	left: -650px;
 }
-.PentagonPage.next {
+.PentagonWrapper.next {
 	display: block;
 	left: 650px;
 }
-.PentagonPage.current {
+.PentagonWrapper.current {
 	display: block;
 	left: 0;
 	opacity: 1;

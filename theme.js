@@ -6,17 +6,26 @@ Pentagon.push(function(loaded) {
 	function(getPage, initialPage, $) {
 		
 		var currentPage = null;
+		var prevPage = null;
+		var nextPage = null;
 		
 		var $title = $("title");
 		var $holder = $("#Holder");
 		
 		function readyPage(url) {
 			var page = getPage(url);
-			if(page._readied) {
+			if(page.wrapper) {
 				return page;
 			}
-			page._readied = true;
-			$holder.append(page.div);
+			
+			var $wrapper = $("<div>")
+			$wrapper.addClass("PentagonWrapper");
+			$wrapper.attr("tabindex", -1);
+			
+			page.wrapper = $wrapper;
+			
+			$holder.append($wrapper);
+			$wrapper.append(page.div);
 			return page;
 		}
 		
@@ -25,26 +34,33 @@ Pentagon.push(function(loaded) {
 			$title.text(page.title);
 			
 			// preload/preview neighbors
+			// be careful with class changes to not disrupt animations
+			if(page.prev != prevPage) {
+				$(".PentagonWrapper.prev").removeClass("prev");
+				prevPage = page.prev;
+			}
 			if(page.prev) {
 				var prev = readyPage(page.prev);
-				prev.div.addClass("prev");
+				prev.wrapper.addClass("prev");
+			}
+			if(page.next != nextPage) {
+				$(".PentagonWrapper.next").removeClass("next");
+				nextPage = page.next;
 			}
 			if(page.next) {
 				var next = readyPage(page.next);
-				next.div.addClass("next");
+				next.wrapper.addClass("next");
 			}
 		}
 		
 		function setCurrentPage(url, pushHistory) {
-			// reset view state
-			$(".PentagonPage.current").removeClass("current");
-			$(".PentagonPage.prev").removeClass("prev");
-			$(".PentagonPage.next").removeClass("next");
 			
 			// set new state
 			var page = readyPage(url);
 			currentPage = page;
-			page.div.addClass("current");
+			$(".PentagonWrapper.current").removeClass("current");
+			page.wrapper.addClass("current");
+			page.wrapper.focus();
 			
 			// apply metadata optimistically
 			showMetadata(page);
@@ -65,6 +81,11 @@ Pentagon.push(function(loaded) {
 			});
 		}
 		
+		/* Cleanup Header */
+		$("head link[rel=prev]").remove();
+		$("head link[rel=self]").remove();
+		$("head link[rel=next]").remove();
+		
 		/* Initialize State */
 		setCurrentPage(initialPage.url, false);
 		if(history.replaceState) {
@@ -72,6 +93,8 @@ Pentagon.push(function(loaded) {
 		}
 		
 		/* Event Handlers */
+		
+		// link transitions
 		function linkClick(evt) {
 			evt.preventDefault();
 			evt.stopPropagation();
@@ -80,6 +103,23 @@ Pentagon.push(function(loaded) {
 		}
 		$(document).on("click", "a[rel=prev],a[rel=next]", linkClick);
 		
+		// arrow key transitions
+		$(document).on("keydown", ".PentagonWrapper", function(evt) {
+			switch(evt.which) {
+				case 37: // left
+					if(currentPage.prev) {
+						setCurrentPage(currentPage.prev, true);
+					}
+					break;
+				case 39: // right
+					if(currentPage.next) {
+						setCurrentPage(currentPage.next, true);
+					}
+					break;
+			}
+		});
+		
+		// history transitions
 		$(window).on("popstate", function(evt) {
 			var url = evt.originalEvent.state.url;
 			if(url) {
