@@ -5,7 +5,7 @@ var JQUERY_URL = "//code.jquery.com/jquery-1.11.0.min.js";
 var PENTAGON_THEME_URL = "theme.html";
 
 /* Page Loading & Theme Applicator Script */
-Pentagon.push(function($, loaded) {
+Pentagon.push(function(loaded) {loaded("$").then(function($) {
 	
 	var $html = $("html");
 	var $head = $("head");
@@ -120,44 +120,48 @@ Pentagon.push(function($, loaded) {
 	
 	/* Exports */
 	loaded("Pentagon.getPage").resolve(getPage);
-});
+});});
 
 /* Async Script + jQuery Loader */
 (function() {
 	var script = document.createElement("script");
 	script.src = JQUERY_URL;
 	script.onload = function() {
+		var $ = jQuery.noConflict(true);
 		
-		jQuery(function($) {
-			
-			var loadMap = {};
-			function grabDeferred(name) {
-				if(loadMap[name]) return loadMap[name];
-				loadMap[name] = $.Deferred();
-				return loadMap[name];
+		var loadMap = {};
+		function grabDeferred(name) {
+			if(loadMap[name]) return loadMap[name];
+			loadMap[name] = $.Deferred();
+			return loadMap[name];
+		}
+		function loaded() {
+			if(arguments.length == 1) {
+				// don't wrap, so resolve() can be called on it
+				return grabDeferred(arguments[0]);
 			}
-			function loaded() {
-				if(arguments.length == 1) {
-					// don't wrap, so resolve() can be called on it
-					return grabDeferred(arguments[0]);
-				}
-				var deferreds = [];
-				for(var i = 0; i < arguments.length; i++) {
-					deferreds.push(grabDeferred(arguments[i]));
-				}
-				return $.when.call($, deferreds);
+			var deferreds = [];
+			for(var i = 0; i < arguments.length; i++) {
+				deferreds.push(grabDeferred(arguments[i]));
 			}
+			return $.when.apply($, deferreds);
+		}
+		loaded("$").resolve($);
+		
+		$(function($) {
 			
 			var queue = Pentagon;
 			Pentagon = {
 				push: function(callback) {
-					callback($, loaded);
+					callback(loaded);
 				}
 			};
 			
 			$.each(queue, function(i, callback) {
-				callback($, loaded);
+				callback(loaded);
 			});
+			
+			loaded("$.ready").resolve($);
 		});
 	};
 	document.head.appendChild(script);
@@ -165,7 +169,7 @@ Pentagon.push(function($, loaded) {
 })();
 
 /* HTML Parser slightly-hacky polyfill */
-Pentagon.push(function($, loaded) {
+Pentagon.push(function(loaded) {loaded("$").then(function($) {
 	try {
 		// test inspired by https://gist.github.com/eligrey/1129031
 		var parser = new DOMParser();
@@ -186,4 +190,4 @@ Pentagon.push(function($, loaded) {
 			return html;
 		}
 	});
-});
+});});

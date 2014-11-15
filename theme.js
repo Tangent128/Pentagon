@@ -1,6 +1,6 @@
 var Pentagon = Pentagon || [];
 
-Pentagon.push(function($, loaded) {
+Pentagon.push(function(loaded) {
 	
 	loaded("Pentagon.getPage", "Pentagon.initialPage").then(
 	function(getPage, initialPage) {
