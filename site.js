@@ -127,13 +127,25 @@ Pentagon.push(function($, loaded) {
 	var script = document.createElement("script");
 	script.src = JQUERY_URL;
 	script.onload = function() {
+		
 		jQuery(function($) {
 			
 			var loadMap = {};
-			function loaded(name) {
+			function grabDeferred(name) {
 				if(loadMap[name]) return loadMap[name];
 				loadMap[name] = $.Deferred();
 				return loadMap[name];
+			}
+			function loaded() {
+				if(arguments.length == 1) {
+					// don't wrap, so resolve() can be called on it
+					return grabDeferred(arguments[0]);
+				}
+				var deferreds = [];
+				for(var i = 0; i < arguments.length; i++) {
+					deferreds.push(grabDeferred(arguments[i]));
+				}
+				return $.when.call($, deferreds);
 			}
 			
 			var queue = Pentagon;
