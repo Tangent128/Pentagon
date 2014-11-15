@@ -18,7 +18,6 @@ _5gon.push(function(loaded) {
 			
 			var $wrapper = $("<div>")
 			$wrapper.addClass("PentagonWrapper");
-			$wrapper.attr("tabindex", -1);
 			
 			page.wrapper = $wrapper;
 			
@@ -119,7 +118,7 @@ _5gon.push(function(loaded) {
 		$(document).on("click", "a[rel=prev],a[rel=next]", linkClick);
 		
 		// arrow key transitions
-		$(document).on("keydown", ".PentagonWrapper", function(evt) {
+		$(document).on("keydown", function(evt) {
 			switch(evt.which) {
 				case 37: // left
 					if(currentPage.prev) {
