@@ -4,11 +4,22 @@
 <title>End</title>
 <link rel="self" href="d.html" />
 <script src="5gon.js" type="application/javascript" async="async"></script>
-<script></script>
+<script>
+var _5gon = _5gon || [];
+_5gon.push(function(loader) {
+	loader("5gon.getPage", "5gon.ready").then(function(getPage) {
+		getPage("d.html").injected.then(function(wrapper) {
+			wrapper.css("background", "#aff");
+		});
+	});
+});
+</script>
 </head>
 <body>
-<i>El Fin</i>
+<div id="d_html">
+<i tabindex="1">El Fin</i>
 <hr />
 <a rel="prev" href="c.html">‹Back</a>
+</div>
 </body>
 </html>

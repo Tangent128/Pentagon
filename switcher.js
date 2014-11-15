@@ -1,8 +1,8 @@
-var Pentagon = Pentagon || [];
+var _5gon = _5gon || [];
 
-Pentagon.push(function(loaded) {
+_5gon.push(function(loaded) {
 	
-	loaded("Pentagon.getPage", "Pentagon.initialPage", "$").then(
+	loaded("5gon.getPage", "5gon.ready", "$").then(
 	function(getPage, initialPage, $) {
 		
 		var currentPage = null;
@@ -22,8 +22,12 @@ Pentagon.push(function(loaded) {
 			
 			page.wrapper = $wrapper;
 			
-			$holder.append($wrapper);
+			// settle into final place in the DOM
 			$wrapper.append(page.div);
+			$holder.append($wrapper);
+			
+			page.injected.resolve($wrapper);
+			
 			return page;
 		}
 		

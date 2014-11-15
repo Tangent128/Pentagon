@@ -1,11 +1,11 @@
 
-var Pentagon = Pentagon || [];
+var _5gon = _5gon || [];
 
 var JQUERY_URL = "//code.jquery.com/jquery-1.11.0.min.js";
 var PENTAGON_THEME_URL = "theme.html";
 
 /* Page Loading & Theme Applicator Script */
-Pentagon.push(function(loaded) {loaded("$").then(function($) {
+_5gon.push(function(loaded) {loaded("$").then(function($) {
 	
 	var $html = $("html");
 	var $head = $("head");
@@ -49,14 +49,15 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 		var record = {
 			div: $div,
 			title: "",
-			loaded: $.Deferred()
+			loaded: $.Deferred(),
+			injected: $.Deferred()
 		};
 		$div.data("PentagonPage", record);
 		$div.addClass("PentagonPage");
 		return record;
 	}
 	
-	function processPage($page, record) {
+	function processPage($page, record, importInlines) {
 		// capture page data
 		function getHref(rel) {
 			var $links = $page.find("head link[rel="+rel+"]");
@@ -66,12 +67,14 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 			return $links.attr("href");
 		}
 		
+		var $pageBody = $page.find("body");
+		
 		record.url = getHref("self");
 		record.title = $page.find("head title").text();
 		record.next = getHref("next");
 		record.prev = getHref("prev");
 		record.icon = getHref("icon");
-		record.div.append($page.find("body").contents());
+		record.div.append($pageBody.contents());
 		
 		// register page under proper name & mark loaded
 		pageRecords[record.url] = record;
@@ -82,10 +85,12 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 			if(loadedFiles[filename]) {
 				return;
 			}
-			loadedFiles[filename] = (filename != null);
-			// need to append tag via raw DOM methods to
-			// prevent jQuery from messing with the url:
-			$head[0].appendChild($tag[0]);
+			if(filename != null || importInlines) {
+				loadedFiles[filename] = (filename != null);
+				// need to append script tag via raw DOM methods
+				// to prevent jQuery from messing with the url:
+				$head[0].appendChild($tag[0]);
+			}
 		});
 	}
 	
@@ -105,7 +110,7 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 		$.when(request, htmlParser).then(function(result, parser) {
 			var html = result[0];
 			var $page = $(parser.parseFromString(html, "text/html"));
-			processPage($page, record);
+			processPage($page, record, true);
 		});
 		
 		return record;
@@ -126,11 +131,12 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 		var $body = $("body");
 		$body.append(themeRecord.div.contents());
 		
-		loaded("Pentagon.initialPage").resolve(initialRecord);
+		// everything is in the proper place
+		loaded("5gon.ready").resolve(initialRecord);
 	});
 	
 	/* Exports */
-	loaded("Pentagon.getPage").resolve(getPage);
+	loaded("5gon.getPage").resolve(getPage);
 });});
 
 /* Async Script + jQuery Loader */
@@ -138,7 +144,7 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 	var script = document.createElement("script");
 	script.src = JQUERY_URL;
 	script.onload = function() {
-		//var $ = jQuery.noConflict(true);
+		var $ = jQuery.noConflict(true);
 		
 		var loadMap = {};
 		function grabDeferred(name) {
@@ -159,8 +165,8 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 		}
 		loaded("$").resolve($);
 		
-		var queue = Pentagon;
-		Pentagon = {
+		var queue = _5gon;
+		_5gon = {
 			push: function(callback) {
 				callback(loaded);
 			}
@@ -179,7 +185,7 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 })();
 
 /* HTML Parser slightly-hacky polyfill */
-Pentagon.push(function(loaded) {loaded("$").then(function($) {
+_5gon.push(function(loaded) {loaded("$").then(function($) {
 	try {
 		// test inspired by https://gist.github.com/eligrey/1129031
 		var parser = new DOMParser();
