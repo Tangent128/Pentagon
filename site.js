@@ -23,14 +23,17 @@ Pentagon.push(function($, loaded) {
 			callback($stylesheet.attr("href"), $stylesheet);
 		});
 		$context.find("head script").each(function() {
-			var $script = $(this);
-			callback($script.attr("src"), $script);
+			// create new script element to ensure the script will run
+			var src = $(this).attr("src");
+			var $script = $("<script>");
+			$script.attr("src", src);
+			callback(src, $script);
 		});
 	}
 	
 	// register preloaded files so we don't try pulling them in again
 	forMetaFiles($html, function(filename, $tag) {
-		loadedFiles[filename] = $tag;
+		loadedFiles[filename] = true;
 	});
 	
 	function makePageRecord($div) {
@@ -70,12 +73,14 @@ Pentagon.push(function($, loaded) {
 			if(loadedFiles[filename]) {
 				return;
 			}
-			loadedFiles[filename] = $tag;
-			$head.append($tag);
+			loadedFiles[filename] = true;
+			// need to append tag via raw DOM methods to
+			// prevent jQuery from messing with the url:
+			$head[0].appendChild($tag[0]);
 		});
 	}
 	
-	/* Load pages */
+	/* Page Loader */
 	function getPage(url) {
 		if(pageRecords[url]) {
 			return pageRecords[url];
@@ -103,13 +108,18 @@ Pentagon.push(function($, loaded) {
 		
 		// extract data from initial page, store it in
 		// the theme's content holder div
-		var record = makePageRecord($contentDiv);
-		processPage($html, record);
+		var initialRecord = makePageRecord($contentDiv);
+		processPage($html, initialRecord);
 		
 		// rearrange contents so that the template is under the real
-		// <body> and the page content is in the right <div>
+		// <body> and the page content is in the theme's <div>
 		$body.append(themeRecord.div);
+		
+		loaded("Pentagon.initialPage").resolve(initialRecord);
 	});
+	
+	/* Exports */
+	loaded("Pentagon.getPage").resolve(getPage);
 });
 
 /* Async Script + jQuery Loader */
