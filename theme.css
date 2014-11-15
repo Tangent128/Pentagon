@@ -4,6 +4,7 @@ html {
 body {
 	background: #f33;
 	background: linear-gradient(to bottom, #f33, #800);
+	overflow-x: hidden;
 }
 #Holder {
 	position: absolute;
@@ -18,18 +19,18 @@ body {
 .PentagonPage {
 	display: none;
 	background: #ffa;
-	margin: 0;
+	padding: 0px 10px 10px;
 
 	position: absolute;
 	top: 0;
-	width: 600px;
+	width: 580px;
+	max-height: 100%;
+	overflow-y: auto;
 	
-	-webkit-transition: left 0.5s;
-	transition: left 0.5s;
-}
-.PentagonPage.current {
-	display: block;
-	left: 0;
+	opacity: 0;
+	
+	-webkit-transition: left 0.5s, opacity 1s;
+	transition: left 0.5s, opacity 1s;
 }
 .PentagonPage.prev {
 	display: block;
@@ -38,4 +39,9 @@ body {
 .PentagonPage.next {
 	display: block;
 	left: 650px;
+}
+.PentagonPage.current {
+	display: block;
+	left: 0;
+	opacity: 1;
 }

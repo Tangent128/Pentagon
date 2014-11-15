@@ -1,5 +1,14 @@
 Pentagon
-* relevant-to-switcher CSS classes:
-CurrentPage = active page
-PrevPage = page before this
-NextPage = page after this
+* prevOff/nextOff CSS classes
+** or "off" class in common...
+** invert: only three onscreen have .current
+*** all left ones have.prev
+*** all right ones have .next
+* readyPage() wraps content divs in something that lets us show title
+** readyPage() or appropriate calculates sequence value for pages from prev/next rels
+* 3D CSS transform
+* maybe smoother CSS classes?
+** .current = focused
+** .show = onscreen at all
+** .next = sequence # > current
+* track currentSequence to go with sequence numbers
