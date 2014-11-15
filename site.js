@@ -9,7 +9,6 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 	
 	var $html = $("html");
 	var $head = $("head");
-	var $body = $("body");
 	var htmlParser = loaded("htmlParser");
 	
 	/* Keep track of pages' metadata, and import any needed stylesheets
@@ -103,7 +102,8 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 	}
 	
 	/* Load & apply theme */
-	getPage(PENTAGON_THEME_URL).loaded.then(function(themeRecord) {
+	var theme = getPage(PENTAGON_THEME_URL);
+	$.when(theme.loaded, loaded("$.ready")).then(function(themeRecord) {
 		var $contentDiv = themeRecord.div.find("#Content");
 		
 		// extract data from initial page, store it in
@@ -113,6 +113,7 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 		
 		// rearrange contents so that the template is under the real
 		// <body> and the page content is in the theme's <div>
+		var $body = $("body");
 		$body.append(themeRecord.div);
 		
 		loaded("Pentagon.initialPage").resolve(initialRecord);
@@ -148,19 +149,18 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 		}
 		loaded("$").resolve($);
 		
-		$(function($) {
-			
-			var queue = Pentagon;
-			Pentagon = {
-				push: function(callback) {
-					callback(loaded);
-				}
-			};
-			
-			$.each(queue, function(i, callback) {
+		var queue = Pentagon;
+		Pentagon = {
+			push: function(callback) {
 				callback(loaded);
-			});
-			
+			}
+		};
+		
+		$.each(queue, function(i, callback) {
+			callback(loaded);
+		});
+		
+		$(function() {
 			loaded("$.ready").resolve($);
 		});
 	};
