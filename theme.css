@@ -5,3 +5,22 @@ body {
 	background: #f33;
 	background: linear-gradient(to bottom, #f33, #800);
 }
+#Holder {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 600px;
+	right: 100px;
+	
+	background: #800;
+	background: linear-gradient(to bottom, #800, #400);
+}
+.PentagonPage {
+	display: none;
+	background: #ffa;
+	margin: 0;
+	padding: 0.5em;
+}
+.current {
+	display: block;
+}

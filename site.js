@@ -42,7 +42,8 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 			title: "",
 			loaded: $.Deferred()
 		};
-		record.div.data("PentagonPage", record);
+		$div.data("PentagonPage", record);
+		$div.addClass("PentagonPage");
 		return record;
 	}
 	
@@ -57,11 +58,11 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 		}
 		
 		record.url = getHref("self");
-		record.div.append($page.find("body").contents());
 		record.title = $page.find("head title").text();
 		record.next = getHref("next");
 		record.prev = getHref("prev");
 		record.icon = getHref("icon");
+		record.div.append($page.find("body").contents());
 		
 		// register page under proper name & mark loaded
 		pageRecords[record.url] = record;
@@ -114,7 +115,7 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 		// rearrange contents so that the template is under the real
 		// <body> and the page content is in the theme's <div>
 		var $body = $("body");
-		$body.append(themeRecord.div);
+		$body.append(themeRecord.div.contents());
 		
 		loaded("Pentagon.initialPage").resolve(initialRecord);
 	});
@@ -128,7 +129,7 @@ Pentagon.push(function(loaded) {loaded("$").then(function($) {
 	var script = document.createElement("script");
 	script.src = JQUERY_URL;
 	script.onload = function() {
-		var $ = jQuery.noConflict(true);
+		//var $ = jQuery.noConflict(true);
 		
 		var loadMap = {};
 		function grabDeferred(name) {
