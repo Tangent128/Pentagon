@@ -22,7 +22,6 @@ body {
 	background: #800;
 	background: linear-gradient(to bottom, #800, #400);
 	
-	/* Always set this for an easy 3D transform support test */
 	-webkit-perspective: 2000px;
 	perspective: 2000px;
 }
@@ -59,10 +58,10 @@ body {
 }
 
 /* For browsers with working 3D transitions */
-html.ThreeDee #Holder {
+body.ThreeDee #Holder {
 	z-index: auto;
 }
-html.ThreeDee .PentagonWrapper {
+body.ThreeDee .PentagonWrapper {
 	/* (side length) / 2*tan(36) */
 	-webkit-transform-origin: 50% 50% -413px;
 	-webkit-transform: rotateY(0deg);
@@ -76,23 +75,23 @@ html.ThreeDee .PentagonWrapper {
 	-webkit-transition: opacity 0.5s, -webkit-transform 0.5s, transform 0.5s;
 	transition: opacity 0.5s, -webkit-transform 0.5s, transform 0.5s;
 }
-html.ThreeDee .PentagonWrapper.prev2 {
+body.ThreeDee .PentagonWrapper.prev2 {
 	display: block;
 	z-index: 1;
 	-webkit-transform: rotateY(-144deg);
 	transform: rotateY(-144deg);
 }
-html.ThreeDee .PentagonWrapper.prev1 {
+body.ThreeDee .PentagonWrapper.prev1 {
 	-webkit-transform: rotateY(-72deg);
 	transform: rotateY(-72deg);
 	opacity: 1;
 }
-html.ThreeDee .PentagonWrapper.next1 {
+body.ThreeDee .PentagonWrapper.next1 {
 	-webkit-transform: rotateY(72deg);
 	transform: rotateY(72deg);
 	opacity: 1;
 }
-html.ThreeDee .PentagonWrapper.next2 {
+body.ThreeDee .PentagonWrapper.next2 {
 	display: block;
 	z-index: 1;
 	-webkit-transform: rotateY(144deg);

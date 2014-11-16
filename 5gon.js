@@ -12,7 +12,7 @@ _5gon.push(function(loaded) {
 		
 		var currentPage = null;
 		
-		var $html = $("html");
+		var $body = $("body");
 		var $title = $("title");
 		var $holder = $("#Holder");
 		
@@ -87,9 +87,9 @@ _5gon.push(function(loaded) {
 			$(".PentagonWrapper.show").removeClass("show");
 			
 			// enable 3D transforms if supported
-			if($holder.css("perspective")
-			   || $holder.css("-webkit-perspective")) {
-				$html.addClass("ThreeDee");
+			if($body.css("perspective")
+			   || $body.css("-webkit-perspective")) {
+				$body.addClass("ThreeDee");
 			}
 			
 			// set new state
