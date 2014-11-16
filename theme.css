@@ -54,6 +54,7 @@ body {
 
 /* For browsers with working 3D transitions */
 #Holder.ThreeDee {
+	z-index: auto;
 }
 #Holder.ThreeDee .PentagonWrapper {
 	/* (side length) / 2*tan(36) */
@@ -61,17 +62,33 @@ body {
 	-webkit-transform: rotateY(0deg);
 	transform-origin: 50% 50% -413px;
 	transform: rotateY(0deg);
+	backface-visibility: hidden;
 	
-	-webkit-transition: opacity 1s, -webkit-transform 0.5s, transform 0.5s;
-	transition: opacity 1s, -webkit-transform 0.5s, transform 0.5s;
+	left: 0px;
+	z-index: 2;
+	
+	-webkit-transition: opacity 0.5s, -webkit-transform 0.5s, transform 0.5s;
+	transition: opacity 0.5s, -webkit-transform 0.5s, transform 0.5s;
+}
+#Holder.ThreeDee .PentagonWrapper.prev2 {
+	display: block;
+	z-index: 1;
+	-webkit-transform: rotateY(-144deg);
+	transform: rotateY(-144deg);
 }
 #Holder.ThreeDee .PentagonWrapper.prev {
-	left: 0px;
 	-webkit-transform: rotateY(-72deg);
 	transform: rotateY(-72deg);
+	opacity: 1;
 }
 #Holder.ThreeDee .PentagonWrapper.next {
-	left: 0px;
 	-webkit-transform: rotateY(72deg);
 	transform: rotateY(72deg);
+	opacity: 1;
+}
+#Holder.ThreeDee .PentagonWrapper.next2 {
+	display: block;
+	z-index: 1;
+	-webkit-transform: rotateY(144deg);
+	transform: rotateY(144deg);
 }

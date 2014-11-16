@@ -57,10 +57,16 @@ _5gon.push(function(loaded) {
 			if(page.prev) {
 				var prev = readyPage(page.prev);
 				setSpot(prev, "prev");
+				if(prev.prev) {
+					setSpot(readyPage(prev.prev), "prev2");
+				}
 			}
 			if(page.next) {
 				var next = readyPage(page.next);
 				setSpot(next, "next");
+				if(next.next) {
+					setSpot(readyPage(next.next), "next2");
+				}
 			}
 		}
 		
