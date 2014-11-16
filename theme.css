@@ -4,7 +4,7 @@ html {
 body {
 	background: #f33;
 	background: linear-gradient(to bottom, #f33, #800);
-	overflow-x: hidden;
+	overflow: hidden;
 }
 #Holder {
 	position: absolute;
@@ -12,6 +12,9 @@ body {
 	bottom: 0;
 	width: 600px;
 	right: 100px;
+	
+	-webkit-perspective: 2000px;
+	perspective: 2000px;
 	
 	background: #800;
 	background: linear-gradient(to bottom, #800, #400);
@@ -27,9 +30,14 @@ body {
 	overflow-y: auto;
 	
 	opacity: 0;
+	/* (side length) / 2*tan(36) */
+	-webkit-transform-origin: 50% 50% -413px;
+	-webkit-transform: rotateY(0deg);
+	transform-origin: 50% 50% -413px;
+	transform: rotateY(0deg);
 	
-	-webkit-transition: left 0.5s, opacity 1s;
-	transition: left 0.5s, opacity 1s;
+	-webkit-transition: left 0.5s, opacity 1s, -webkit-transform 0.5s, transform 0.5s;
+	transition: left 0.5s, opacity 1s, -webkit-transform 0.5s, transform 0.5s;
 }
 .PentagonPage {
 	padding: 0px 10px 10px;
@@ -37,10 +45,14 @@ body {
 .PentagonWrapper.prev {
 	display: block;
 	left: -650px;
+	-webkit-transform: translateX(650px) rotateY(-72deg);
+	transform: translateX(650px) rotateY(-72deg);
 }
 .PentagonWrapper.next {
 	display: block;
 	left: 650px;
+	-webkit-transform: translateX(-650px) rotateY(72deg);
+	transform: translateX(-650px) rotateY(72deg);
 }
 .PentagonWrapper.current {
 	display: block;
