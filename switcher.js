@@ -33,7 +33,10 @@ _5gon.push(function(loaded) {
 			return page;
 		}
 		
-		function setSpot(page, spot) {
+		function setSpot(contextPage, page, spot) {
+			// ensure we didn't load too late to display
+			if(contextPage != currentPage) return;
+			
 			// be careful with class changes to not disrupt animations
 			var $page = page.wrapper;
 			$page.addClass("show");
@@ -49,25 +52,28 @@ _5gon.push(function(loaded) {
 			$page.data("spot", spot);
 		}
 		
+		function preload() {}
+		
 		function showMetadata(page) {
+			// ensure we didn't load too late to display
+			if(page != currentPage) return;
+			
 			// apply page metadata
 			$title.text(page.title);
 			
 			// preload/preview neighbors
-			if(page.prev) {
-				var prev = readyPage(page.prev);
-				setSpot(prev, "prev");
-				if(prev.prev) {
-					setSpot(readyPage(prev.prev), "prev2");
-				}
-			}
-			if(page.next) {
-				var next = readyPage(page.next);
-				setSpot(next, "next");
-				if(next.next) {
-					setSpot(readyPage(next.next), "next2");
-				}
-			}
+			readyPage(page.prev).loaded.then(function(prev) {
+				setSpot(page, prev, "prev");
+				readyPage(prev.prev).loaded.then(function(prev2) {
+					setSpot(page, prev2, "prev2");
+				});
+			});
+			readyPage(page.next).loaded.then(function(next) {
+				setSpot(page, next, "next");
+				readyPage(next.next).loaded.then(function(next2) {
+					setSpot(page, next2, "next2");
+				});
+			});
 		}
 		
 		function setCurrentPage(url, pushHistory) {
@@ -83,13 +89,10 @@ _5gon.push(function(loaded) {
 			// set new state
 			var page = readyPage(url);
 			currentPage = page;
-			setSpot(page, "current");
+			setSpot(page, page, "current");
 			
 			var $wrapper = page.wrapper;
 			$wrapper.focus();
-			
-			// apply metadata optimistically
-			showMetadata(page);
 
 			// remove anything onscreen that shouldn't be
 			$(".PentagonWrapper.current:not(.show)").removeClass("current");
@@ -105,10 +108,7 @@ _5gon.push(function(loaded) {
 			
 			// apply metadata once we know it's loaded
 			page.loaded.then(function(page) {
-				// ensure we didn't load too late to display
-				if(page == currentPage) {
-					showMetadata(page);
-				}
+				showMetadata(page);
 			});
 		}
 		

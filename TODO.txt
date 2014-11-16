@@ -1,14 +1,6 @@
 Pentagon
-* prevOff/nextOff CSS classes
-** or "off" class in common...
-** invert: only three onscreen have .current
-*** all left ones have.prev
-*** all right ones have .next
-* readyPage() wraps content divs in something that lets us show title
-** readyPage() or appropriate calculates sequence value for pages from prev/next rels
-* 3D CSS transform
-* maybe smoother CSS classes?
-** .current = focused
-** .show = onscreen at all
-** .next = sequence # > current
-* track currentSequence to go with sequence numbers
+* merge theme html/css
+* merge 5gon/switcher
+* "inside shape" theme
+* readyPage() or appropriate calculates sequence value for pages from prev/next rels
+** track currentSequence to go with sequence numbers

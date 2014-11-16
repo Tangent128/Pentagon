@@ -95,7 +95,14 @@ _5gon.push(function(loaded) {loaded("$").then(function($) {
 	}
 	
 	/* Page Loader */
+	var rejected = makePageRecord();
+	rejected.loaded.reject();
+	rejected.injected.reject();
+	
 	function getPage(url) {
+		if(url == null) {
+			return rejected;
+		}
 		if(pageRecords[url]) {
 			return pageRecords[url];
 		}
