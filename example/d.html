@@ -7,11 +7,12 @@
 <script src="5gon.js" type="application/javascript" async="async"></script>
 <script>
 var _5gon = _5gon || [];
-_5gon.push(function(loader) {loader("5gon.getPage", "$", "5gon.ready").then(function(getPage, $) {
-	getPage("example/d.html").injected.then(function(wrapper) {
+_5gon.push(function(loader) {
+	loader("#example/d.html").then(function(wrapper) {
 		wrapper.css("background", "#aff");
+		wrapper.css("border", "thick #0f8 solid");
 	});
-});});
+});
 </script>
 </head>
 <body>

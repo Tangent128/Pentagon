@@ -33,7 +33,7 @@ _5gon.push(function(loaded) {
 			$holder.append($wrapper);
 			
 			page.loaded.then(function() {
-				page.injected.resolve($wrapper);
+				page.injected.resolve(page.div);
 			});
 			
 			return page;
@@ -238,10 +238,6 @@ _5gon.push(function(loaded) {loaded("$").then(function($) {
 		record.icon = getHref("icon");
 		record.div.append($pageBody.contents());
 		
-		// register page under proper name & mark loaded
-		pageRecords[record.url] = record;
-		record.loaded.resolve(record);
-		
 		// import scripts/stylesheets that aren't already loaded
 		forMetaFiles($page, function(filename, $tag) {
 			if(loadedFiles[filename]) {
@@ -253,6 +249,13 @@ _5gon.push(function(loaded) {loaded("$").then(function($) {
 				// to prevent jQuery from messing with the url:
 				$head[0].appendChild($tag[0]);
 			}
+		});
+		
+		// register page under proper name & mark loaded
+		pageRecords[record.url] = record;
+		record.loaded.resolve(record);
+		record.injected.then(function(div) {
+			loaded("#"+record.url).resolve(div);
 		});
 	}
 	

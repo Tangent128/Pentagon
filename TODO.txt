@@ -3,3 +3,9 @@ Pentagon
 * readyPage() or appropriate calculates sequence value for pages from prev/next rels
 ** track currentSequence to go with sequence numbers
 ** something to handle up/child navigation links anyways
+* tuning setting on theme for # to prefetch
+* think about modularizing:
+** requestPage
+*** allows packing multipages in one file, no XHR needed
+*** needs processPage to take separate head/body arguments
+** load/apply theme
