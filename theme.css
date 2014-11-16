@@ -64,11 +64,11 @@ body {
 }
 #Holder.ThreeDee .PentagonWrapper.prev {
 	left: 0px;
-	-webkit-transform: translateX(650px) rotateY(-72deg);
-	transform: translateX(650px) rotateY(-72deg);
+	-webkit-transform: rotateY(-72deg);
+	transform: rotateY(-72deg);
 }
 #Holder.ThreeDee .PentagonWrapper.next {
 	left: 0px;
-	-webkit-transform: translateX(-650px) rotateY(72deg);
-	transform: translateX(-650px) rotateY(72deg);
+	-webkit-transform: rotateY(72deg);
+	transform: rotateY(72deg);
 }
