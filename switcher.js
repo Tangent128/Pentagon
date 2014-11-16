@@ -68,6 +68,12 @@ _5gon.push(function(loaded) {
 			
 			$(".PentagonWrapper.show").removeClass("show");
 			
+			// enable 3D transforms if supported
+			if($holder.css("perspective")
+			   || $holder.css("-webkit-perspective")) {
+				$holder.addClass("ThreeDee");
+			}
+			
 			// set new state
 			var page = readyPage(url);
 			currentPage = page;

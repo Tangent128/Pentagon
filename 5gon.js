@@ -144,7 +144,7 @@ _5gon.push(function(loaded) {loaded("$").then(function($) {
 	var script = document.createElement("script");
 	script.src = JQUERY_URL;
 	script.onload = function() {
-		var $ = jQuery.noConflict(true);
+		var $ = jQuery.noConflict();
 		
 		var loadMap = {};
 		function grabDeferred(name) {

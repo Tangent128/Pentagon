@@ -15,6 +15,10 @@ body {
 	
 	background: #800;
 	background: linear-gradient(to bottom, #800, #400);
+	
+	/* Always set this for an easy 3D transform support test */
+	-webkit-perspective: 2000px;
+	perspective: 2000px;
 }
 .PentagonWrapper {
 	display: none;
@@ -48,9 +52,8 @@ body {
 	opacity: 1;
 }
 
+/* For browsers with working 3D transitions */
 #Holder.ThreeDee {
-	-webkit-perspective: 2000px;
-	perspective: 2000px;
 }
 #Holder.ThreeDee .PentagonWrapper {
 	/* (side length) / 2*tan(36) */
