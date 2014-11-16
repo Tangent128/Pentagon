@@ -44,11 +44,11 @@ body {
 .PentagonPage {
 	padding: 0px 10px 10px;
 }
-.PentagonWrapper.prev {
+.PentagonWrapper.prev1 {
 	display: block;
 	left: -650px;
 }
-.PentagonWrapper.next {
+.PentagonWrapper.next1 {
 	display: block;
 	left: 650px;
 }
@@ -59,10 +59,10 @@ body {
 }
 
 /* For browsers with working 3D transitions */
-#Holder.ThreeDee {
+html.ThreeDee #Holder {
 	z-index: auto;
 }
-#Holder.ThreeDee .PentagonWrapper {
+html.ThreeDee .PentagonWrapper {
 	/* (side length) / 2*tan(36) */
 	-webkit-transform-origin: 50% 50% -413px;
 	-webkit-transform: rotateY(0deg);
@@ -76,23 +76,23 @@ body {
 	-webkit-transition: opacity 0.5s, -webkit-transform 0.5s, transform 0.5s;
 	transition: opacity 0.5s, -webkit-transform 0.5s, transform 0.5s;
 }
-#Holder.ThreeDee .PentagonWrapper.prev2 {
+html.ThreeDee .PentagonWrapper.prev2 {
 	display: block;
 	z-index: 1;
 	-webkit-transform: rotateY(-144deg);
 	transform: rotateY(-144deg);
 }
-#Holder.ThreeDee .PentagonWrapper.prev {
+html.ThreeDee .PentagonWrapper.prev1 {
 	-webkit-transform: rotateY(-72deg);
 	transform: rotateY(-72deg);
 	opacity: 1;
 }
-#Holder.ThreeDee .PentagonWrapper.next {
+html.ThreeDee .PentagonWrapper.next1 {
 	-webkit-transform: rotateY(72deg);
 	transform: rotateY(72deg);
 	opacity: 1;
 }
-#Holder.ThreeDee .PentagonWrapper.next2 {
+html.ThreeDee .PentagonWrapper.next2 {
 	display: block;
 	z-index: 1;
 	-webkit-transform: rotateY(144deg);
@@ -102,6 +102,6 @@ body {
 </head>
 <body>
 <h1>Site Template</h1>
-<div id="Holder"><div id="Content"></div></div>
+<div id="Holder"></div>
 </body>
 </html>

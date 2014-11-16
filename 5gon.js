@@ -12,6 +12,7 @@ _5gon.push(function(loaded) {
 		
 		var currentPage = null;
 		
+		var $html = $("html");
 		var $title = $("title");
 		var $holder = $("#Holder");
 		
@@ -68,13 +69,13 @@ _5gon.push(function(loaded) {
 			
 			// preload/preview neighbors
 			readyPage(page.prev).loaded.then(function(prev) {
-				setSpot(page, prev, "prev");
+				setSpot(page, prev, "prev1");
 				readyPage(prev.prev).loaded.then(function(prev2) {
 					setSpot(page, prev2, "prev2");
 				});
 			});
 			readyPage(page.next).loaded.then(function(next) {
-				setSpot(page, next, "next");
+				setSpot(page, next, "next1");
 				readyPage(next.next).loaded.then(function(next2) {
 					setSpot(page, next2, "next2");
 				});
@@ -88,7 +89,7 @@ _5gon.push(function(loaded) {
 			// enable 3D transforms if supported
 			if($holder.css("perspective")
 			   || $holder.css("-webkit-perspective")) {
-				$holder.addClass("ThreeDee");
+				$html.addClass("ThreeDee");
 			}
 			
 			// set new state
@@ -100,9 +101,8 @@ _5gon.push(function(loaded) {
 			$wrapper.focus();
 
 			// remove anything onscreen that shouldn't be
-			$(".PentagonWrapper.current:not(.show)").removeClass("current");
-			$(".PentagonWrapper.prev:not(.show)").removeClass("prev");
-			$(".PentagonWrapper.next:not(.show)").removeClass("next");
+			var remove = "current prev1 prev2 next1 next2";
+			$(".PentagonWrapper:not(.show)").removeClass(remove);
 
 			// play nice with back button
 			if(pushHistory){
@@ -206,8 +206,8 @@ _5gon.push(function(loaded) {loaded("$").then(function($) {
 		loadedFiles[filename] = (filename != null);
 	});
 	
-	function makePageRecord($div) {
-		$div = $div || $("<div>");
+	function makePageRecord() {
+		$div = $("<div>");
 		var record = {
 			div: $div,
 			title: "",
@@ -288,15 +288,12 @@ _5gon.push(function(loaded) {loaded("$").then(function($) {
 	/* Load & apply theme */
 	var theme = getPage(PENTAGON_THEME_URL);
 	$.when(theme.loaded, loaded("$.ready")).then(function(themeRecord) {
-		var $contentDiv = themeRecord.div.find("#Content");
-		
 		// extract data from initial page, store it in
 		// the theme's content holder div
-		var initialRecord = makePageRecord($contentDiv);
+		var initialRecord = makePageRecord();
 		processPage($html, initialRecord);
 		
-		// rearrange contents so that the template is under the real
-		// <body> and the page content is in the theme's <div>
+		// move template <body> under the real <body>
 		var $body = $("body");
 		$body.append(themeRecord.div.contents());
 		
