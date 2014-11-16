@@ -1,6 +1,5 @@
 Pentagon
-* merge theme html/css
-* merge 5gon/switcher
 * "inside shape" theme
 * readyPage() or appropriate calculates sequence value for pages from prev/next rels
 ** track currentSequence to go with sequence numbers
+** something to handle up/child navigation links anyways
