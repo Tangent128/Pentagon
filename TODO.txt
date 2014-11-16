@@ -4,6 +4,7 @@ Pentagon
 ** track currentSequence to go with sequence numbers
 ** something to handle up/child navigation links anyways
 * tuning setting on theme for # to prefetch
+* wrapper template ability
 * think about modularizing:
 ** requestPage
 *** allows packing multipages in one file, no XHR needed

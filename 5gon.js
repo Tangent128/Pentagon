@@ -33,7 +33,7 @@ _5gon.push(function(loaded) {
 			$holder.append($wrapper);
 			
 			page.loaded.then(function() {
-				page.injected.resolve(page.div);
+				page.injected.resolve($wrapper);
 			});
 			
 			return page;
@@ -84,16 +84,22 @@ _5gon.push(function(loaded) {
 		
 		function setCurrentPage(url, pushHistory) {
 			
-			$(".PentagonWrapper.show").removeClass("show");
-			
 			// enable 3D transforms if supported
 			if($body.css("perspective")
 			   || $body.css("-webkit-perspective")) {
 				$body.addClass("ThreeDee");
 			}
 			
-			// set new state
+			// ensure page change is actually needed
 			var page = readyPage(url);
+			if(page == currentPage) {
+				return;
+			}
+			
+			// recalculate what needs to be onscreen
+			$(".PentagonWrapper.show").removeClass("show");
+			
+			// set new state
 			currentPage = page;
 			setSpot(page, page, "current");
 			
@@ -138,6 +144,12 @@ _5gon.push(function(loaded) {
 			setCurrentPage(href, true);
 		}
 		$(document).on("click", "a[rel=prev],a[rel=next]", linkClick);
+		
+		// click transitions
+		$(document).on("click", ".PentagonWrapper", function() {
+			var page = $(".PentagonPage", this).data("PentagonPage");
+			setCurrentPage(page.url, true);
+		});
 		
 		// arrow key transitions
 		$(document).on("keydown", function(evt) {
@@ -254,8 +266,8 @@ _5gon.push(function(loaded) {loaded("$").then(function($) {
 		// register page under proper name & mark loaded
 		pageRecords[record.url] = record;
 		record.loaded.resolve(record);
-		record.injected.then(function(div) {
-			loaded("#"+record.url).resolve(div);
+		record.injected.then(function(wrapper) {
+			loaded("#"+record.url).resolve(wrapper);
 		});
 	}
 	
