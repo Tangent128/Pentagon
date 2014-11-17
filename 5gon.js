@@ -43,19 +43,8 @@ _5gon.push(function(loaded) {
 			// ensure we didn't load too late to display
 			if(contextPage != currentPage) return;
 			
-			// be careful with class changes to not disrupt animations
 			var $page = page.wrapper;
-			$page.addClass("show");
-				
-			if($page.hasClass(spot)) {
-				return;
-			}
-			var oldSpot = $page.data("spot");
-			if(oldSpot) {
-				$page.removeClass(oldSpot);
-			}
 			$page.addClass(spot);
-			$page.data("spot", spot);
 		}
 		
 		function preload() {}
@@ -97,18 +86,22 @@ _5gon.push(function(loaded) {
 			}
 			
 			// recalculate what needs to be onscreen
-			$(".PentagonWrapper.show").removeClass("show");
-			
+			var remove = "current prev1 prev2 next1 next2";
+			$(".PentagonWrapper").removeClass(remove);
+
+			// Important! setSpot and showMetadata only use
+			// class manipulation functions. Manipulating
+			// the page in other ways meanwhile can disrupt
+			// CSS animations. That includes focus(), apparently.
+
 			// set new state
 			currentPage = page;
 			setSpot(page, page, "current");
 			
-			var $wrapper = page.wrapper;
-			$wrapper.focus();
-
-			// remove anything onscreen that shouldn't be
-			var remove = "current prev1 prev2 next1 next2";
-			$(".PentagonWrapper:not(.show)").removeClass(remove);
+			// apply metadata once we know it's loaded
+			page.loaded.then(function(page) {
+				showMetadata(page);
+			});
 
 			// play nice with back button
 			if(pushHistory){
@@ -117,10 +110,10 @@ _5gon.push(function(loaded) {
 				}
 			}
 			
-			// apply metadata once we know it's loaded
-			page.loaded.then(function(page) {
-				showMetadata(page);
-			});
+			// focus current page
+			var $wrapper = page.wrapper;
+			$wrapper.focus();
+
 		}
 		
 		/* Cleanup Header */
